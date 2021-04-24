@@ -4,6 +4,7 @@ async function routes(fastify) {
   fastify.get('/test', async () => ({ hello: 'world' }));
 
   const opts = {
+    httpStatus: 201,
     schema: {
       description: 'post some data',
       tags: ['user', 'code'],
@@ -18,11 +19,23 @@ async function routes(fastify) {
           someOtherKey: { type: 'number', minimum: 10 },
         },
       },
+      response: {
+        201: {
+          type: 'object',
+          properties: {
+            value: { type: 'string' },
+            otherValue: { type: 'boolean' },
+            hello: { type: 'string' },
+          },
+        },
+      },
     },
   };
 
-  fastify.post('/test', opts, async (arg) => {
-    console.log(arg.body);
+  fastify.post('/test', opts, async (req, res) => {
+    res.status(201);
+    console.log(req.body);
+    throw new Error({ status: 422, message: 'test' });
     return { hello: 'world' };
   });
 }
