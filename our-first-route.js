@@ -1,7 +1,13 @@
 // our-first-route.js
+const createError = require('fastify-error');
+const CustomError = createError('422_ERROR', 'message', 422);
 
 async function routes(fastify) {
-  fastify.get('/test', async () => ({ hello: 'world' }));
+  fastify.get('/test', async () => {
+    // throw {t:1};
+    throw new CustomError({error:123});
+    return { hello: 'world' };
+  });
 
   const opts = {
     httpStatus: 201,
