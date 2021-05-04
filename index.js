@@ -17,10 +17,10 @@ const ajv = new Ajv({
 
 fastify.setValidatorCompiler(({ schema, method, url, httpPart }) => ajv.compile(schema));
 
-fastify.setErrorHandler(function (error, request, reply) {
+fastify.setErrorHandler((error, request, reply) => {
   console.log(error);
-  reply.status(501).send(error);
-})
+  reply.status(error.status || 500).send(error.toJSON && error.toJSON() || error);
+});
 
 fastify.register(require('fastify-swagger'), {
   swagger: {
