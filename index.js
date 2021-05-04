@@ -1,9 +1,21 @@
 // Require the framework and instantiate it
 const fastify = require('fastify')({
   logger: true,
+  ajv: {
+    customOptions: {
+      removeAdditional: false,
+      useDefaults: true,
+      coerceTypes: true,
+      allErrors: true,
+      strictTypes: true,
+      nullable: true,
+      strictRequired: true,
+    },
+    plugins: [],
+  },
 });
 
-const Ajv = require('ajv');
+/*const Ajv = require('ajv');
 
 const ajv = new Ajv({
   removeAdditional: false,
@@ -16,6 +28,9 @@ const ajv = new Ajv({
 });
 
 fastify.setValidatorCompiler(({ schema, method, url, httpPart }) => ajv.compile(schema));
+*/
+
+fastify.register(require('fastify-response-validation'));
 
 fastify.setErrorHandler((error, request, reply) => {
   console.log(error);
@@ -23,6 +38,7 @@ fastify.setErrorHandler((error, request, reply) => {
 });
 
 fastify.register(require('fastify-swagger'), {
+  routePrefix: '/api-doc',
   swagger: {
     info: {
       title: 'Test swagger',

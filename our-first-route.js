@@ -62,25 +62,37 @@ async function routes(fastify) {
     httpStatus: 201,
     schema: {
       description: 'post some data',
-      tags: ['user', 'code'],
+      tags: ['test'],
       summary: 'qwerty',
       additionalProperties: false,
       body: {
         additionalProperties: false,
         type: 'object',
-        required: ['someKey'],
+        required: ['someKey', 'someOtherKey'],
         properties: {
           someKey: { type: 'string' },
           someOtherKey: { type: 'number', minimum: 10 },
         },
       },
       response: {
-        201: {
+        200: {
           type: 'object',
+          additionalProperties: false,
+          required: ['hello'],
           properties: {
             value: { type: 'string' },
             otherValue: { type: 'boolean' },
             hello: { type: 'string' },
+          },
+        },
+        201: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['hello-test'],
+          properties: {
+            value: { type: 'string' },
+            otherValue: { type: 'boolean' },
+            'hello-test': { type: 'string' },
           },
         },
       },
@@ -90,7 +102,6 @@ async function routes(fastify) {
   fastify.post('/test', opts, async (req, res) => {
     res.status(201);
     console.log(req.body);
-    throw new Error({ status: 422, message: 'test' });
     return { hello: 'world' };
   });
 }
